@@ -18,7 +18,7 @@ BEGIN
 END 
 
 //
-
+-- return to default delimeter
 DELIMITER ;
 
 -- main select statement
