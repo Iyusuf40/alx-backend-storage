@@ -5,10 +5,10 @@ DROP FUNCTION IF EXISTS nulToCurrentYear;
 DELIMITER //
 
 -- function checks if date is null and returns current year instead
-CREATE FUNCTION nulToCurrentYear(date1 year) RETURNS year DETERMINISTIC
+CREATE FUNCTION nulToCurrentYear(date1 YEAR) RETURNS YEAR DETERMINISTIC
 BEGIN
-    DECLARE date2 year;
-    SET date2 = year(curdate());
+    DECLARE date2 YEAR;
+    SET date2 = YEAR(CURDATE());
     IF date1 IS NULL
     THEN
         RETURN date2;
@@ -21,6 +21,7 @@ END
 
 DELIMITER ;
 
+-- main select statement
 SELECT band_name, (nulToCurrentYear(split) - formed) as lifespan
 FROM
     metal_bands
