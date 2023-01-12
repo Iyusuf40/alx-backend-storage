@@ -26,6 +26,6 @@ SELECT band_name, (nulToCurrentYear(split) - formed) as lifespan
 FROM
     metal_bands
 WHERE style LIKE "%Glam rock%"
-ORDER BY lifespan DESC;
+ORDER BY lifespan DESC, 1 ASC;
 
 DROP FUNCTION nulToCurrentYear;
