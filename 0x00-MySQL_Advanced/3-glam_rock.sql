@@ -8,7 +8,7 @@ DELIMITER //
 CREATE FUNCTION nulToCurrentYear(date1 YEAR) RETURNS YEAR DETERMINISTIC
 BEGIN
     DECLARE date2 YEAR;
-    SET date2 = YEAR(CURDATE());
+    SET date2 = 2020; -- YEAR(CURDATE());
     IF date1 IS NULL
     THEN
         RETURN date2;
