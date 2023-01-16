@@ -1,6 +1,6 @@
 // updates documents
 
-db.school.updateMany(
+db.school.update(
     {
         name: `Holberton school`
     },
