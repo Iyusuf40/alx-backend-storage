@@ -28,7 +28,7 @@ def main():
     ]
 
     for method, count in lst:
-        print(f"    method {method}: {count}")
+        print(f"\tmethod {method}: {count}")
 
     print("{} status check".format(status_check))
 
