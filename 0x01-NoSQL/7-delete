@@ -1,6 +1,6 @@
 // updates documents
 
-db.school.remove(
+db.school.deleteMany(
     {
         name: `Holberton school`
     }
