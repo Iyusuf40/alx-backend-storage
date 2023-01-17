@@ -37,7 +37,7 @@ def main():
     res = list(col.aggregate(pipeline))
     print("IPs:")
     for ip in res[:10]:
-        print(" {}: {}".format(ip['_id'], ip['count']))
+        print("\t{}: {}".format(ip['_id'], ip['count']))
     client.close()
 
 
