@@ -15,7 +15,7 @@ def main():
     put_count = col.count_documents({"method": "PUT"})
     patch_count = col.count_documents({"method": "PATCH"})
     del_count = col.count_documents({"method": "DELETE"})
-    status_check = col.count_documents({"path": "/status"})
+    status_check = col.count_documents({"method": "GET", "path": "/status"})
     print(f"{docs_count} logs")
     print(f"Methods:")
     print(f"    method GET: {get_count}")
