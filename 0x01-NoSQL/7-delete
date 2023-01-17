@@ -1,0 +1,7 @@
+// updates documents
+
+db.school.remove(
+    {
+        name: `Holberton school`
+    }
+)
