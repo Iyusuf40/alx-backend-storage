@@ -18,11 +18,16 @@ def main():
     status_check = col.count_documents({"method": "GET", "path": "/status"})
     print("{} logs".format(docs_count))
     print("Methods:")
-    print("    method GET: {}".format(get_count))
-    print("    method POST: {}".format(post_count))
-    print("    method PUT: {}".format(put_count))
-    print("    method PATCH: {}".format(patch_count))
-    print("    method DELETE: {}".format(del_count))
+    lst = [
+        ("GET", get_count),
+        ("POST", post_count),
+        ("PUT", put_count),
+        ("PATCH", patch_count),
+        ("DELETE", del_count)
+    ]
+
+    for method, count in lst:
+        print(f"\tmethod {method}: {count}")
     print("{} status check".format(status_check))
 
     pipeline = [
