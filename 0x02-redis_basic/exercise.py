@@ -29,6 +29,7 @@ def count_calls(method: Callable) -> Callable:
     """ a decorator that saves the no of times the
     wrapped function is called """
     key = method.__qualname__
+
     @wraps(method)
     def wrapper(s, *args, **kwds):
         s._redis.incr(key)
