@@ -37,16 +37,16 @@ def count_calls(method: Callable) -> Callable:
     return wrapper
 
 
-def call_history(f: Callable) -> Callable:
+def call_history(method: Callable) -> Callable:
     """ a decorator that saves the input args of f to a list
     and output to anothr list """
-    @wraps(f)
-    def wrapper(s, *args, **kwds):
+    @wraps(method)
+    def wrapper(self, *args, **kwds):
         # args[0]._redis.incr(f.__qualname__, 1)
-        key = f.__qualname__
-        s._redis.rpush(key + ":inputs", str(args))
-        res = f(s, *args, **kwds)
-        s._redis.rpush(key + ":outputs", res)
+        key = method.__qualname__
+        self._redis.rpush(key + ":inputs", str(args))
+        res = method(self, *args, **kwds)
+        self._redis.rpush(key + ":outputs", res)
         return res
     return wrapper
 
