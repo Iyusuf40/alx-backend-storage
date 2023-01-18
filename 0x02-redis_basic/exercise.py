@@ -25,13 +25,28 @@ def replay(fn: Callable) -> None:
         print(in_out)
 
 
-def count_calls(f: Callable) -> Callable:
-    """ a decorator that saves the no of times the
-    wrapped function is called """
-    @wraps(f)
-    def wrapper(s, *args, **kwds):
-        s._redis.incr(f.__qualname__)
-        return f(s, *args, **kwds)
+# def count_calls(f: Callable) -> Callable:
+#     """ a decorator that saves the no of times the
+#     wrapped function is called """
+#     @wraps(f)
+#     def wrapper(s, *args, **kwds):
+#         s._redis.incr(f.__qualname__)
+#         return f(s, *args, **kwds)
+#     return wrapper
+
+
+def count_calls(method: Callable) -> Callable:
+    """ Decortator for counting how many times a function
+    has been called """
+
+    key = method.__qualname__
+
+    @wraps(method)
+    def wrapper(self, *args, **kwargs):
+        """ Wrapper for decorator functionality """
+        self._redis.incr(key)
+        return method(self, *args, **kwargs)
+
     return wrapper
 
 
@@ -53,6 +68,7 @@ class Cache:
     """ cache class """
 
     def __init__(self) -> None:
+        """ class constructor """
         self._redis = redis.Redis()
         self._redis.flushdb()
 
