@@ -7,11 +7,13 @@ import random
 import string
 import redis
 from typing import List, Set, Dict, Tuple, Any, Union, Callable
+import uuid
 
 
 def create_rand_key() -> str:
     """ returns a random alphanumeric string of len = 9 """
-    key = "".join(random.choices(string.printable[:62], k=9))
+    # key = "".join(random.choices(string.printable[:62], k=9))
+    key = str(uuid.uuid4())
     return key
 
 
