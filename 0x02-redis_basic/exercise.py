@@ -22,7 +22,20 @@ def count_calls(f: Callable) -> Callable:
     def wrapper(*args, **kwds):
         args[0]._redis.incr(f.__qualname__, 1)
         return f(*args, **kwds)
+    return wrapper
 
+
+def call_history(f: Callable) -> Callable:
+    """ a decorator that saves the input args of f to a list
+    and output to anothr list """
+    @wraps(f)
+    def wrapper(*args, **kwds):
+        # args[0]._redis.incr(f.__qualname__, 1)
+        key = f.__qualname__
+        args[0]._redis.rpush(key + ":inputs", str(args))
+        res = f(*args, **kwds)
+        args[0]._redis.rpush(key + ":outputs", res)
+        return res
     return wrapper
 
 
@@ -33,6 +46,7 @@ class Cache:
         self._redis = redis.Redis()
         self._redis.flushdb()
 
+    @call_history
     @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """ stores data using a rand key """
