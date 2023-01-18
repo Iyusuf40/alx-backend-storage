@@ -36,9 +36,9 @@ def count_calls(f: Callable) -> Callable:
     """ a decorator that saves the no of times the
     wrapped function is called """
     @wraps(f)
-    def wrapper(*args, **kwds):
-        args[0]._redis.incr(f.__qualname__, 1)
-        return f(*args, **kwds)
+    def wrapper(s, *args, **kwds):
+        s._redis.incr(f.__qualname__, 1)
+        return f(s, *args, **kwds)
     return wrapper
 
 
@@ -46,12 +46,12 @@ def call_history(f: Callable) -> Callable:
     """ a decorator that saves the input args of f to a list
     and output to anothr list """
     @wraps(f)
-    def wrapper(*args, **kwds):
+    def wrapper(s, *args, **kwds):
         # args[0]._redis.incr(f.__qualname__, 1)
         key = f.__qualname__
-        args[0]._redis.rpush(key + ":inputs", str(args[1:]))
-        res = f(*args, **kwds)
-        args[0]._redis.rpush(key + ":outputs", res)
+        s._redis.rpush(key + ":inputs", str(args))
+        res = f(s, *args, **kwds)
+        s._redis.rpush(key + ":outputs", res)
         return res
     return wrapper
 
