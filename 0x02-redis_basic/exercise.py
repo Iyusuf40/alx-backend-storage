@@ -2,8 +2,9 @@
 """ mod's doc string """
 
 
-import string
+from functools import wraps
 import random
+import string
 import redis
 from typing import List, Set, Dict, Tuple, Any, Union, Callable
 
@@ -14,6 +15,17 @@ def create_rand_key() -> str:
     return key
 
 
+def count_calls(f: Callable) -> Callable:
+    """ a decorator that saves the no of times the
+    wrapped function is called """
+    @wraps(f)
+    def wrapper(*args, **kwds):
+        args[0]._redis.incr(f.__qualname__, 1)
+        return f(*args, **kwds)
+
+    return wrapper
+
+
 class Cache:
     """ cache class """
 
@@ -21,6 +33,7 @@ class Cache:
         self._redis = redis.Redis()
         self._redis.flushdb()
 
+    @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """ stores data using a rand key """
         key = create_rand_key()
