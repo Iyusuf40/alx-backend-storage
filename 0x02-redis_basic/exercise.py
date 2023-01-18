@@ -32,7 +32,7 @@ def call_history(f: Callable) -> Callable:
     def wrapper(*args, **kwds):
         # args[0]._redis.incr(f.__qualname__, 1)
         key = f.__qualname__
-        args[0]._redis.rpush(key + ":inputs", str(args))
+        args[0]._redis.rpush(key + ":inputs", str(args[1:]))
         res = f(*args, **kwds)
         args[0]._redis.rpush(key + ":outputs", res)
         return res
