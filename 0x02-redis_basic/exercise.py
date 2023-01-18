@@ -10,13 +10,6 @@ from typing import List, Set, Dict, Tuple, Any, Union, Callable
 import uuid
 
 
-def create_rand_key() -> str:
-    """ returns a random alphanumeric string of len = 9 """
-    # key = "".join(random.choices(string.printable[:62], k=9))
-    key = str(uuid.uuid4())
-    return key
-
-
 def replay(fn: Callable) -> None:
     """ prints out call_history od Cache.store """
     r = redis.Redis()
@@ -67,7 +60,7 @@ class Cache:
     @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """ stores data using a rand key """
-        key = create_rand_key()
+        key = str(uuid.uuid4())
         self._redis.set(key, data)
         return key
 
