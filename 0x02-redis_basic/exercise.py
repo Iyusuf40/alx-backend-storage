@@ -5,7 +5,7 @@
 import string
 import random
 import redis
-from typing import List, Set, Dict, Tuple, Any, Union
+from typing import List, Set, Dict, Tuple, Any, Union, Callable
 
 
 def create_rand_key() -> str:
@@ -26,3 +26,24 @@ class Cache:
         key = create_rand_key()
         self._redis.set(key, data)
         return key
+
+    def get(
+            self, key: str, fn: Union[Callable, None] = None
+    ) -> Union[str, bytes, int, float, None]:
+        """ a wrapper to redis.get to return python object """
+        if fn:
+            res = fn(self._redis.get(key))
+            return res
+        return self._redis.get(key)
+
+    def get_int(
+        self, key: str, fn: Union[Callable, None] = int
+    ) -> Union[str, bytes, int, float, None]:
+        """ sets self.get fn parameter with int func """
+        return self.get(key, int)
+
+    def get_str(
+        self, key: str, fn: Union[Callable, None] = str
+    ) -> Union[str, bytes, int, float, None]:
+        """ sets self.get fn parameter with str func """
+        return self.get(key, str)
