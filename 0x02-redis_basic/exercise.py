@@ -25,14 +25,14 @@ def replay(fn: Callable) -> None:
         print(in_out)
 
 
-def count_calls(fn: Callable) -> Callable:
+def count_calls(method: Callable) -> Callable:
     """ a decorator that saves the no of times the
     wrapped function is called """
-    key = fn.__qualname__
+    key = method.__qualname__
     @wraps(fn)
     def wrapper(s, *args, **kwds):
         s._redis.incr(key)
-        return fn(s, *args, **kwds)
+        return method(s, *args, **kwds)
     return wrapper
 
 
