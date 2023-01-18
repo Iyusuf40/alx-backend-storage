@@ -17,6 +17,21 @@ def create_rand_key() -> str:
     return key
 
 
+def replay(fn: Callable) -> None:
+    """ prints out call_history od Cache.store """
+    r = redis.Redis()
+    input_key = fn.__qualname__ + ":inputs"
+    output_key = fn.__qualname__ + ":outputs"
+    inputs = r.lrange(input_key, 0, -1)
+    outputs = r.lrange(output_key, 0, -1)
+    matched = list(zip(inputs, outputs))
+    print("Cache.store was called {} times:".format(len(matched)))
+    for inp, outp in matched:
+        in_out = "Cache.store(*{}) -> {}".format(inp.decode("utf-8"),
+                                                 outp.decode("utf-8"))
+        print(in_out)
+
+
 def count_calls(f: Callable) -> Callable:
     """ a decorator that saves the no of times the
     wrapped function is called """
