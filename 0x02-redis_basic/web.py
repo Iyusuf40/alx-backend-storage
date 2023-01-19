@@ -12,12 +12,13 @@ def get_page(url: str) -> str:
     res = requests.get(url)
     r = redis.Redis()
     key = "count:" + url
+    content_key = "cont:" + url
     prev_count = r.get(key)
     if prev_count:
-        r.incr(key)
-        # r.setex(key, 10, prev_count + 1)
+        return r.get(content_key)
     else:
         r.setex(key, 10, 1)
+        r.setex(content_key, 10, res.text)
     return res.text
 
 
