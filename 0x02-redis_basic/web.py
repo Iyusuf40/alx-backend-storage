@@ -12,10 +12,10 @@ def get_page(url: str) -> str:
     r = redis.Redis()
     key = "count:" + url
     content_key = "cont:" + url
-    prev_count = r.get(key)
-    if prev_count:
-        r.incr(key)
-        return r.get(content_key)
+    cached_page = r.get(content_key)
+    r.incr(key)
+    if cached_page:
+        return cached_page.decode("utf-8")
     else:
         res = requests.get(url)
         r.set(key, 1)
@@ -30,5 +30,6 @@ if __name__ == "__main__":
     for i in range(10):
         res = get_page(url)
         print(r.get(key))
+        print(res[:20])
     time.sleep(10)
     print(r.get(key))
