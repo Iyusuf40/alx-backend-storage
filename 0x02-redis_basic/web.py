@@ -25,7 +25,9 @@ def dec(method: Callable) -> Callable:
         if cached_page:
             return str(cached_page.decode("utf-8"))
 
-        return method(url)
+        res = method(url)
+        r.setex(content_key, 10, res)
+        return res
 
     return wr
 
@@ -34,8 +36,6 @@ def dec(method: Callable) -> Callable:
 def get_page(url: str) -> str:
     """ returns a page at url"""
     res = requests.get(url)
-    content_key = "cached:" + url
-    r.setex(content_key, 11, res.text)
     return res.text
 
 
