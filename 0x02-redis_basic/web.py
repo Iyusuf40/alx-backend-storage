@@ -18,7 +18,6 @@ def get_page(url: str) -> str:
         return cached_page.decode("utf-8")
     else:
         res = requests.get(url)
-        r.set(key, 1)
         r.setex(content_key, 10, res.text)
     return res.text
 
