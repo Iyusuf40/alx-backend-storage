@@ -35,7 +35,7 @@ def get_page(url: str) -> str:
     """ returns a page at url"""
     res = requests.get(url)
     content_key = "cached:" + url
-    r.setex(content_key, 10, res.text)
+    r.setex(content_key, 11, res.text)
     return res.text
 
 
@@ -46,5 +46,12 @@ if __name__ == "__main__":
         res = get_page(url)
         print(r.get(key))
         print(res[:20])
-    time.sleep(10)
+    time.sleep(5)
+    res = get_page(url)
+    print("===== after 5 secs =====")
+    print(res[:20])
+    time.sleep(5)
+    res = get_page(url)
+    print("===== after 10 secs =====")
+    print(res[:20])
     print(r.get(key))
