@@ -12,10 +12,10 @@ from typing import Callable
 r = redis.Redis()
 
 
-def dec(fn: Callable) -> Callable:
+def dec(method: Callable) -> Callable:
     """ decorator implements caching """
 
-    @functools.wraps(fn)
+    @functools.wraps(method)
     def wr(url):
         """ wrapper func """
         key = "count:" + url
@@ -25,7 +25,7 @@ def dec(fn: Callable) -> Callable:
         if cached_page:
             return str(cached_page.decode("utf-8"))
 
-        return fn(url)
+        return method(url)
 
     return wr
 
