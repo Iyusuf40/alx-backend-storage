@@ -15,6 +15,7 @@ def get_page(url: str) -> str:
     content_key = "cont:" + url
     prev_count = r.get(key)
     if prev_count:
+        r.incr(key)
         return r.get(content_key)
     else:
         r.setex(key, 10, 1)
