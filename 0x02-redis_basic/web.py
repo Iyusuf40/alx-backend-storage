@@ -1,37 +1,57 @@
 #!/usr/bin/env python3
-""" Module for Implementing an expiring web cache and tracker """
+""" mod's doc string """
 
-from functools import wraps
+
 import redis
 import requests
+import time
+import functools
 from typing import Callable
+
 
 r = redis.Redis()
 
 
-def count_requests(method: Callable) -> Callable:
-    """ Decortator for counting how many times a request
-    has been made """
+def dec(method: Callable) -> Callable:
+    """ decorator implements caching """
 
-    @wraps(method)
-    def wrapper(url):
-        """ Wrapper for decorator functionality """
-        r.incr(f"count:{url}")
-        cached_html = r.get(f"cached:{url}")
-        if cached_html:
-            return cached_html.decode('utf-8')
+    @functools.wraps(method)
+    def wr(url):
+        """ wrapper func """
+        key = "count:" + url
+        content_key = "cached:" + url
+        r.incr(key)
+        cached_page = r.get(content_key)
+        if cached_page:
+            return str(cached_page.decode("utf-8"))
 
-        html = method(url)
-        r.setex(f"cached:{url}", 10, html)
-        return html
+        res = method(url)
+        r.setex(content_key, 10, res)
+        return res
 
-    return wrapper
+    return wr
 
 
-@count_requests
+@dec
 def get_page(url: str) -> str:
-    """Uses the requests module to obtain the HTML
-    content of a particular URL and returns it.
-    """
-    req = requests.get(url)
-    return req.text
+    """ returns a page at url"""
+    res = requests.get(url)
+    return res.text
+
+
+if __name__ == "__main__":
+    url = "https://flexrecords.cloza.tech/"
+    key = "count:" + url
+    for i in range(10):
+        res = get_page(url)
+        print(r.get(key))
+        print(res[:20])
+    time.sleep(5)
+    res = get_page(url)
+    print("===== after 5 secs =====")
+    print(res[:20])
+    time.sleep(5)
+    res = get_page(url)
+    print("===== after 10 secs =====")
+    print(res[:20])
+    print(r.get(key))
