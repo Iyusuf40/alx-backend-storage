@@ -9,7 +9,6 @@ import time
 
 def get_page(url: str) -> str:
     """ tracks no of times a url is visited """
-    res = requests.get(url)
     r = redis.Redis()
     key = "count:" + url
     content_key = "cont:" + url
@@ -18,7 +17,8 @@ def get_page(url: str) -> str:
         r.incr(key)
         return r.get(content_key)
     else:
-        r.setex(key, 10, 1)
+        res = requests.get(url)
+        r.set(key, 1)
         r.setex(content_key, 10, res.text)
     return res.text
 
